@@ -9,7 +9,7 @@ If you'd like to release a community connector as open source, please see
 
 ## Examples
 
-### NPM Downloads
+### [NPM Downloads]
 
 The NPM (Node Package Manager) Downloads connector uses the [npm api] to fetch
 download information for a package or group of packages.
@@ -29,3 +29,4 @@ Good example of:
 [community-connectors]: https://developers.google.com/datastudio/connector/
 [`UrlFetchApp.fetch()`]: https://developers.google.com/apps-script/reference/url-fetch/url-fetch-app
 [DataStudio Service]: https://developers.google.com/apps-script/reference/data-studio/
+[NPM Downloads]: https://github.com/googledatastudio/example-connectors/tree/master/npm-downloads
