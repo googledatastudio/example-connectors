@@ -21,15 +21,6 @@
 var cc = DataStudioApp.createCommunityConnector();
 var DEFAULT_PACKAGE = "googleapis";
 
-// https://devsite.googleplex.com/datastudio/connector/reference#getauthtype
-function getAuthType() {
-  var AuthTypes = cc.AuthType;
-  return cc
-    .newAuthTypeResponse()
-    .setAuthType(AuthTypes.NONE)
-    .build();
-}
-
 // https://devsite.googleplex.com/datastudio/connector/reference#getconfig
 function getConfig() {
   var config = cc.getConfig();
