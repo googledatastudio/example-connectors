@@ -1,0 +1,15 @@
+{
+  "dependencies": {
+    "libraries": []
+  },
+  "dataStudio": {
+    "name": "npm-downloads-ts",
+    "logoUrl": "logoUrl",
+    "company": "manifestCompany",
+    "companyUrl": "companyUrl",
+    "addonUrl": "addonUrl",
+    "supportUrl": "supportUrl",
+    "description": "description",
+    "sources": [""]
+  }
+}
