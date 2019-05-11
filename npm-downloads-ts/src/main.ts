@@ -1,19 +1,19 @@
-enum AuthType {
-  NONE
+interface AuthType {
+  NONE: AuthType;
 }
 
-enum FieldType {
-  NUMBER,
-  TEXT
+interface FieldType {
+  NUMBER: FieldType;
+  TEXT: FieldType;
 }
 
-enum AggregationType {
-  SUM
+interface AggregationType {
+  SUM: AggregationType;
 }
 
-export interface GetAuthTypeResponse {}
+interface GetAuthTypeResponse {}
 
-export interface AuthTypeResponseBuilder {
+interface AuthTypeResponseBuilder {
   setAuthType: (authType: AuthType) => AuthTypeResponseBuilder;
   build: () => GetAuthTypeResponse;
 }
@@ -63,16 +63,16 @@ interface FieldsBuilder {
   asArray: () => Array<FieldBuilder>;
 }
 
-export interface CommunityConnector {
-  AuthType: typeof AuthType;
-  FieldType: typeof FieldType;
-  AggregationType: typeof AggregationType;
+interface CommunityConnector {
+  AuthType: AuthType;
+  FieldType: FieldType;
+  AggregationType: AggregationType;
   newAuthTypeResponse: () => AuthTypeResponseBuilder;
   getConfig: () => GetConfigResponseBuilder;
   getFields: () => FieldsBuilder;
 }
 
-export interface DataStudioApp {
+interface DataStudioApp {
   createCommunityConnector: () => CommunityConnector;
 }
 
@@ -108,8 +108,6 @@ declare const DataStudioApp: DataStudioApp;
 
 // TODO - make proper type.
 declare const UrlFetchApp: any;
-
-// END TYPES I MADE UP.
 
 // https://devsite.googleplex.com/datastudio/connector/reference#getauthtype
 function getAuthType(): GetAuthTypeResponse {
