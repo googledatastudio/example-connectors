@@ -1,4 +1,7 @@
 {
+  "dependencies": {
+    "libraries": []
+  },
   "dataStudio": {
     "name": "npm Downloads",
     "logoUrl": "https://raw.githubusercontent.com/npm/logos/master/npm%20square/n-64.png",
