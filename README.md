@@ -11,8 +11,9 @@ If you'd like to release a community connector as open source, please see
 
 ### [NPM Downloads]
 
-The NPM (Node Package Manager) Downloads connector uses the [package downloads count] api to fetch
-download information for a package or group of packages.
+The NPM (Node Package Manager) Downloads connector uses the
+[package downloads count] api to fetch download information for a package or
+group of packages.
 
 Highlighted Best Practices:
 
@@ -24,6 +25,15 @@ Good example of:
 +   No authentication required
 +   Requesting data using [`UrlFetchApp.fetch()`]
 +   Using a date range
+
+### [TypeScript NPM Downloads]
+
+This is the same code as the [NPM Downloads] connector, but implemented using
+TypeScript.
+
+Good example of:
+
++   Using TypeScript to help write less-buggy code.
 
 [Google Data Studio]: https://datastudio.google.com/
 [community-connectors]: https://developers.google.com/datastudio/connector/
