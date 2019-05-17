@@ -92,7 +92,7 @@ function logObject(s: any) {
 
 // https://devsite.googleplex.com/datastudio/connector/reference#getdata
 function getData(request: GetDataRequest): GetDataResponse {
-  const configParams = validateConfig(request.configParams);
+  const configParams = cleanUpConfig(request.configParams);
   const requestedFields = getFields().forIds(
     request.fields.map(({ name }) => name)
   );
@@ -105,16 +105,26 @@ function getData(request: GetDataRequest): GetDataResponse {
 
     const scopedResponses = scopedPackages.reduce(
       (responses: PackageData[], scopedPackage: string) =>
-        responses.concat(fetchPackagesData(request.dateRange, scopedPackage)),
+        responses.concat(
+          fetchPackagesData(request.dateRange, scopedPackage, false)
+        ),
       []
     );
     const nonScopedResponse =
       nonScopedPackages.length > 0
-        ? fetchPackagesData(request.dateRange, nonScopedPackages.join(","))
+        ? fetchPackagesData(
+            request.dateRange,
+            nonScopedPackages.join(","),
+            nonScopedPackages.length > 1
+          )
         : [];
 
     const packagesData = scopedResponses.concat(nonScopedResponse);
     const data = toGetDataRows(packagesData, requestedFields);
+    return {
+      schema: requestedFields.build(),
+      rows: data
+    };
   } catch (e) {
     cc.newUserError()
       .setDebugText("Error fetching data from API. Exception details: " + e)
@@ -123,14 +133,9 @@ function getData(request: GetDataRequest): GetDataResponse {
       )
       .throwException();
   }
-
-  return {
-    schema: requestedFields.build(),
-    rows: data
-  };
 }
 
-function validateConfig(configParams: ConfigParams): ConfigParams {
+function cleanUpConfig(configParams: ConfigParams): ConfigParams {
   configParams = configParams || {};
   configParams.package = configParams.package || DEFAULT_PACKAGE;
 
@@ -144,18 +149,23 @@ function validateConfig(configParams: ConfigParams): ConfigParams {
   return configParams;
 }
 
-function normalizeAPIResponse(jsonString: string): PackageData[] {
+function normalizeAPIResponse(
+  jsonString: string,
+  bulkRequest: boolean = false
+): PackageData[] {
   const parsed = JSON.parse(jsonString);
-  if (parsed instanceof Array) {
-    return parsed;
-  } else {
-    return [parsed];
+  if (bulkRequest) {
+    // The bulk requests are keyed by package name, but since PackageData also
+    // has the name, we can just flatten this down.
+    return Object.keys(parsed).map(parsedKey => parsed[parsedKey]);
   }
+  return [parsed];
 }
 
 function fetchPackagesData(
   dateRange: GetDataRequest["dateRange"],
-  packagesString: string
+  packagesString: string,
+  bulkRequest: boolean
 ): PackageData[] {
   // TODO - change to template string.
   const url = [
@@ -166,9 +176,10 @@ function fetchPackagesData(
     "/",
     packagesString
   ].join("");
+
   const response = UrlFetchApp.fetch(url);
   const jsonString = response.getContentText();
-  return normalizeAPIResponse(jsonString);
+  return normalizeAPIResponse(jsonString, bulkRequest);
 }
 
 function toGetDataRows(
