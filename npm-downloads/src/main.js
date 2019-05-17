@@ -21,15 +21,7 @@
 var cc = DataStudioApp.createCommunityConnector();
 var DEFAULT_PACKAGE = "googleapis";
 
-// https://devsite.googleplex.com/datastudio/connector/reference#getauthtype
-function getAuthType() {
-  var AuthTypes = cc.AuthType;
-  return cc
-    .newAuthTypeResponse()
-    .setAuthType(AuthTypes.NONE)
-    .build();
-}
-
+// [START get_config]
 // https://devsite.googleplex.com/datastudio/connector/reference#getconfig
 function getConfig() {
   var config = cc.getConfig();
@@ -55,24 +47,32 @@ function getConfig() {
 
   return config.build();
 }
+// [END get_config]
 
+// [START get_schema]
 function getFields() {
   var fields = cc.getFields();
   var types = cc.FieldType;
   var aggregations = cc.AggregationType;
 
   fields
-      .newDimension()
-      .setId("id")
-      .setName("Id")
-      .setType(types.TEXT);
+    .newDimension()
+    .setId("packageName")
+    .setName("Package")
+    .setType(types.TEXT);
 
   fields
-      .newMetric()
-      .setId("distance")
-      .setName("Distance")
-      .setType(types.NUMBER)
-      .setAggregation(aggregations.SUM);
+    .newDimension()
+    .setId("day")
+    .setName("Date")
+    .setType(types.YEAR_MONTH_DAY);
+
+  fields
+    .newMetric()
+    .setId("downloads")
+    .setName("Downloads")
+    .setType(types.NUMBER)
+    .setAggregation(aggregations.SUM);
 
   return fields;
 }
@@ -81,7 +81,9 @@ function getFields() {
 function getSchema(request) {
   return { schema: getFields().build() };
 }
+// [END get_schema]
 
+// [START get_data]
 // https://devsite.googleplex.com/datastudio/connector/reference#getdata
 function getData(request) {
   request.configParams = validateConfig(request.configParams);
@@ -111,37 +113,10 @@ function getData(request) {
   };
 }
 
-// https://devsite.googleplex.com/datastudio/connector/reference#isadminuser
-function isAdminUser() {
-  return false;
-}
-
 /**
- * Formats the parsed response from external data source into correct tabular
- * format and returns only the requestedFields
+ * Gets response for UrlFetchApp.
  *
- * @param {Object} parsedResponse The response string from external data source
- *     parsed into an object in a standard format.
- * @param {Array} requestedFields The fields requested in the getData request.
- * @returns {Array} Array containing rows of data in key-value pairs for each
- *     field.
- */
-function getFormattedData(response, requestedFields) {
-  var data = [];
-  Object.keys(response).map(function(packageName) {
-    var package = response[packageName];
-    var downloadData = package.downloads;
-    var formattedData = downloadData.map(function(dailyDownload) {
-      return formatData(requestedFields, packageName, dailyDownload);
-    });
-    data = data.concat(formattedData);
-  });
-  return data;
-}
-
-/**
- * Validates config parameters and provides missing values.
- aram {Object} request Data request parameters.
+ * @param {Object} request Data request parameters.
  * @returns {string} Response text for UrlFetchApp.
  */
 function fetchDataFromApi(request) {
@@ -181,6 +156,56 @@ function normalizeResponse(request, responseString) {
 }
 
 /**
+ * Formats the parsed response from external data source into correct tabular
+ * format and returns only the requestedFields
+ *
+ * @param {Object} parsedResponse The response string from external data source
+ *     parsed into an object in a standard format.
+ * @param {Array} requestedFields The fields requested in the getData request.
+ * @returns {Array} Array containing rows of data in key-value pairs for each
+ *     field.
+ */
+function getFormattedData(response, requestedFields) {
+  var data = [];
+  Object.keys(response).map(function(packageName) {
+    var package = response[packageName];
+    var downloadData = package.downloads;
+    var formattedData = downloadData.map(function(dailyDownload) {
+      return formatData(requestedFields, packageName, dailyDownload);
+    });
+    data = data.concat(formattedData);
+  });
+  return data;
+}
+// [END get_data]
+
+// https://devsite.googleplex.com/datastudio/connector/reference#isadminuser
+function isAdminUser() {
+  return false;
+}
+
+/**
+ * Validates config parameters and provides missing values.
+ *
+ * @param {Object} configParams Config parameters from `request`.
+ * @returns {Object} Updated Config parameters.
+ */
+function validateConfig(configParams) {
+  configParams = configParams || {};
+  configParams.package = configParams.package || DEFAULT_PACKAGE;
+
+  configParams.package = configParams.package
+    .split(",")
+    .map(function(x) {
+      return x.trim();
+    })
+    .join(",");
+
+  return configParams;
+}
+
+
+/**
  * Formats a single row of data into the required format.
  *
  * @param {Object} requestedFields Fields requested in the getData request.
@@ -203,4 +228,4 @@ function formatData(requestedFields, packageName, dailyDownload) {
     }
   });
   return { values: row };
-}
+ }
