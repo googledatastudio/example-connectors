@@ -6,8 +6,6 @@ TypeScript.
 
 ## Workflow
 
-To work on this project,
-
 1.  Clone this project:
 
     ```sh
