@@ -84,27 +84,36 @@ interface PackageData {
   package: string;
 }
 
+function logObject(s: any) {
+  cc.newDebugError()
+    .setText(JSON.stringify(s))
+    .throwException();
+}
+
 // https://devsite.googleplex.com/datastudio/connector/reference#getdata
 function getData(request: GetDataRequest): GetDataResponse {
-  request.configParams = validateConfig(request.configParams);
+  const configParams = validateConfig(request.configParams);
   const requestedFields = getFields().forIds(
     request.fields.map(({ name }) => name)
   );
 
   try {
-    var npmResponseJSON = fetchDataFromApi(request).getContentText();
-
-    const {
-      configParams: { package }
-    } = request;
+    const { package } = configParams;
     const packages = package.split(",");
-    var packagesData: PackageData[];
-    if (packages.length > 1) {
-      packagesData = JSON.parse(npmResponseJSON);
-    } else {
-      var packageData: PackageData = JSON.parse(npmResponseJSON);
-      packagesData = [packageData];
-    }
+    const scopedPackages = packages.filter(p => p[0] === "@");
+    const nonScopedPackages = packages.filter(p => p[0] !== "@");
+
+    const scopedResponses = scopedPackages.reduce(
+      (responses: PackageData[], scopedPackage: string) =>
+        responses.concat(fetchPackagesData(request.dateRange, scopedPackage)),
+      []
+    );
+    const nonScopedResponse =
+      nonScopedPackages.length > 0
+        ? fetchPackagesData(request.dateRange, nonScopedPackages.join(","))
+        : [];
+
+    var packagesData = scopedResponses.concat(nonScopedResponse);
     var data = toGetDataRows(packagesData, requestedFields);
   } catch (e) {
     cc.newUserError()
@@ -135,19 +144,31 @@ function validateConfig(configParams: ConfigParams): ConfigParams {
   return configParams;
 }
 
-function fetchDataFromApi(request: GetDataRequest) {
-  // TODO - scoped packages are supported in bulk queries, so we need to make
-  // multiple fetches if there is more than one package & they use scoped packages.
+function normalizeAPIResponse(jsonString: string): PackageData[] {
+  const parsed = JSON.parse(jsonString);
+  if (parsed instanceof Array) {
+    return parsed;
+  } else {
+    return [parsed];
+  }
+}
+
+function fetchPackagesData(
+  dateRange: GetDataRequest["dateRange"],
+  packagesString: string
+): PackageData[] {
+  // TODO - change to template string.
   var url = [
     "https://api.npmjs.org/downloads/range/",
-    request.dateRange.startDate,
+    dateRange.startDate,
     ":",
-    request.dateRange.endDate,
+    dateRange.endDate,
     "/",
-    request.configParams.package
+    packagesString
   ].join("");
   var response = UrlFetchApp.fetch(url);
-  return response;
+  var jsonString = response.getContentText();
+  return normalizeAPIResponse(jsonString);
 }
 
 function toGetDataRows(
