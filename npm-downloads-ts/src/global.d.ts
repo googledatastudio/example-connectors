@@ -7,7 +7,7 @@ type GetAuthTypeResponse = Object;
 
 // getSchema
 interface GetSchemaRequest {
-  configParams: { [configId: string]: string };
+  configParams: ConfigParams;
 }
 interface GetSchemaResponse {
   schema: Object[];
@@ -20,8 +20,12 @@ interface GetConfigRequest {
 type GetConfigResponse = Object;
 
 // getData
+interface ConfigParams {
+  [configId: string]: string;
+}
 interface GetDataRequest {
-  configParams: { [configId: string]: string };
+  // TODO - verify whether is optional, or if it just an empty object.
+  configParams?: ConfigParams;
   scriptParams: {
     sampleExtraction: boolean;
     lastRefresh: string;

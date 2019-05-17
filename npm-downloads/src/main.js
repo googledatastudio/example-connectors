@@ -62,23 +62,17 @@ function getFields() {
   var aggregations = cc.AggregationType;
 
   fields
-    .newDimension()
-    .setId("packageName")
-    .setName("Package")
-    .setType(types.TEXT);
+      .newDimension()
+      .setId("id")
+      .setName("Id")
+      .setType(types.TEXT);
 
   fields
-    .newDimension()
-    .setId("day")
-    .setName("Date")
-    .setType(types.YEAR_MONTH_DAY);
-
-  fields
-    .newMetric()
-    .setId("downloads")
-    .setName("Downloads")
-    .setType(types.NUMBER)
-    .setAggregation(aggregations.SUM);
+      .newMetric()
+      .setId("distance")
+      .setName("Distance")
+      .setType(types.NUMBER)
+      .setAggregation(aggregations.SUM);
 
   return fields;
 }
@@ -147,28 +141,7 @@ function getFormattedData(response, requestedFields) {
 
 /**
  * Validates config parameters and provides missing values.
- *
- * @param {Object} configParams Config parameters from `request`.
- * @returns {Object} Updated Config parameters.
- */
-function validateConfig(configParams) {
-  configParams = configParams || {};
-  configParams.package = configParams.package || DEFAULT_PACKAGE;
-
-  configParams.package = configParams.package
-    .split(",")
-    .map(function(x) {
-      return x.trim();
-    })
-    .join(",");
-
-  return configParams;
-}
-
-/**
- * Gets response for UrlFetchApp.
- *
- * @param {Object} request Data request parameters.
+ aram {Object} request Data request parameters.
  * @returns {string} Response text for UrlFetchApp.
  */
 function fetchDataFromApi(request) {

@@ -1,3 +1,5 @@
+const DEFAULT_PACKAGE = "@google/dscc-gen";
+
 // https://devsite.googleplex.com/datastudio/connector/reference#getauthtype
 function getAuthType(): GetAuthTypeResponse {
   var AuthTypes = cc.AuthType;
@@ -20,29 +22,20 @@ function getConfig(request: GetConfigRequest): GetConfigResponse {
 
   config
     .newInfo()
-    .setId("generalInfo")
+    .setId("instructions")
     .setText(
-      "This is the template connector created by https://github.com/googledatastudio/dscc-gen"
+      "Enter one or more npm package names to fetch their download count."
     );
 
   config
-    .newSelectSingle()
-    .setId("units")
-    .setName("Units")
-    .setHelpText("Metric or Imperial Units")
-    .setAllowOverride(true)
-    .addOption(
-      config
-        .newOptionBuilder()
-        .setLabel("Metric")
-        .setValue("metric")
-    )
-    .addOption(
-      config
-        .newOptionBuilder()
-        .setLabel("Imperial")
-        .setValue("imperial")
-    );
+    .newTextInput()
+    .setId("package")
+    .setName("Enter one or more package names separated by commas.")
+    .setHelpText('e.g. "googleapis" or "@google/dscc-gen,@google/dscc-scripts"')
+    .setPlaceholder(DEFAULT_PACKAGE)
+    .setAllowOverride(true);
+
+  config.setDateRangeRequired(true);
 
   return config.build();
 }
@@ -55,14 +48,20 @@ function getFields(): Fields {
 
   fields
     .newDimension()
-    .setId("id")
-    .setName("Id")
+    .setId("packageName")
+    .setName("Package")
     .setType(types.TEXT);
 
   fields
+    .newDimension()
+    .setId("day")
+    .setName("Date")
+    .setType(types.YEAR_MONTH_DAY);
+
+  fields
     .newMetric()
-    .setId("distance")
-    .setName("Distance")
+    .setId("downloads")
+    .setName("Downloads")
     .setType(types.NUMBER)
     .setAggregation(aggregations.SUM);
 
@@ -74,41 +73,106 @@ function getSchema(request: GetSchemaRequest): GetSchemaResponse {
   return { schema: getFields().build() };
 }
 
+type DashedDate = string; // "2014-01-01"
+interface PackageData {
+  downloads: Array<{
+    day: DashedDate;
+    downloads: number;
+  }>;
+  start: DashedDate;
+  end: DashedDate;
+  package: string;
+}
+
 // https://devsite.googleplex.com/datastudio/connector/reference#getdata
 function getData(request: GetDataRequest): GetDataResponse {
-  // Calling `UrlFetchApp.fetch()` makes this connector require authentication.
-  UrlFetchApp.fetch("https://google.com");
-
-  var requestedFields = getFields().forIds(
-    request.fields.map(function(field) {
-      return field.name;
-    })
+  request.configParams = validateConfig(request.configParams);
+  const requestedFields = getFields().forIds(
+    request.fields.map(({ name }) => name)
   );
 
-  // Convert from miles to kilometers if 'metric' units were picked.
-  var unitMultiplier = 1;
-  if (request.configParams.units === "metric") {
-    unitMultiplier = 1.60934;
-  }
+  try {
+    var npmResponseJSON = fetchDataFromApi(request).getContentText();
 
-  var rows: GetDataRows = [];
-  for (var i = 0; i < 100; i++) {
-    var row: Array<GetDataRowValue> = [];
-    requestedFields.asArray().forEach(function(field) {
-      switch (field.getId()) {
-        case "id":
-          return row.push("id_" + i);
-        case "distance":
-          return row.push(i * unitMultiplier);
-        default:
-          return row.push("");
-      }
-    });
-    rows.push({ values: row });
+    const {
+      configParams: { package }
+    } = request;
+    const packages = package.split(",");
+    var packagesData: PackageData[];
+    if (packages.length > 1) {
+      packagesData = JSON.parse(npmResponseJSON);
+    } else {
+      var packageData: PackageData = JSON.parse(npmResponseJSON);
+      packagesData = [packageData];
+    }
+    var data = toGetDataRows(packagesData, requestedFields);
+  } catch (e) {
+    cc.newUserError()
+      .setDebugText("Error fetching data from API. Exception details: " + e)
+      .setText(
+        "The connector has encountered an unrecoverable error. Please try again later, or file an issue if this error persists."
+      )
+      .throwException();
   }
 
   return {
     schema: requestedFields.build(),
-    rows: rows
+    rows: data
   };
+}
+
+function validateConfig(configParams: ConfigParams): ConfigParams {
+  configParams = configParams || {};
+  configParams.package = configParams.package || DEFAULT_PACKAGE;
+
+  configParams.package = configParams.package
+    .split(",")
+    .map(function(x) {
+      return x.trim();
+    })
+    .join(",");
+
+  return configParams;
+}
+
+function fetchDataFromApi(request: GetDataRequest) {
+  // TODO - scoped packages are supported in bulk queries, so we need to make
+  // multiple fetches if there is more than one package & they use scoped packages.
+  var url = [
+    "https://api.npmjs.org/downloads/range/",
+    request.dateRange.startDate,
+    ":",
+    request.dateRange.endDate,
+    "/",
+    request.configParams.package
+  ].join("");
+  var response = UrlFetchApp.fetch(url);
+  return response;
+}
+
+function toGetDataRows(
+  response: PackageData[],
+  requestedFields: Fields
+): GetDataRows {
+  var data: GetDataRows = [];
+  response.forEach(function(packageData: PackageData) {
+    packageData.downloads.forEach(function(downloads) {
+      var row: GetDataRowValue[] = requestedFields
+        .asArray()
+        .map(function(requestedField) {
+          switch (requestedField.getId()) {
+            case "day":
+              return downloads.day.replace(/-/g, "");
+            case "downloads":
+              return downloads.downloads;
+            case "packageName":
+              return packageData.package;
+            default:
+              return "";
+          }
+        });
+      data.push({ values: row });
+    });
+  });
+  return data;
 }
