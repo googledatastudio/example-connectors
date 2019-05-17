@@ -164,16 +164,9 @@ const fetchPackagesData = (
   packagesString: string,
   bulkRequest: boolean
 ): PackageData[] => {
-  // TODO - change to template string.
-  const url = [
-    "https://api.npmjs.org/downloads/range/",
-    dateRange.startDate,
-    ":",
-    dateRange.endDate,
-    "/",
-    packagesString
-  ].join("");
-
+  const { startDate, endDate } = dateRange;
+  const range = `${startDate}:${endDate}`;
+  const url = `https://api.npmjs.org/downloads/range/${range}/${packagesString}`;
   const response = UrlFetchApp.fetch(url);
   const jsonString = response.getContentText();
   return normalizeAPIResponse(jsonString, bulkRequest);
