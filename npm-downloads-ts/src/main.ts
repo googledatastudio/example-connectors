@@ -1,23 +1,22 @@
+const cc = DataStudioApp.createCommunityConnector();
 const DEFAULT_PACKAGE = "@google/dscc-gen";
 
 // https://devsite.googleplex.com/datastudio/connector/reference#getauthtype
-function getAuthType(): GetAuthTypeResponse {
+const getAuthType = (): GetAuthTypeResponse => {
   const AuthTypes = cc.AuthType;
   return cc
     .newAuthTypeResponse()
     .setAuthType(AuthTypes.NONE)
     .build();
-}
-
-const cc = DataStudioApp.createCommunityConnector();
+};
 
 // https://devsite.googleplex.com/datastudio/connector/reference#isadminuser
-function isAdminUser(): boolean {
+const isAdminUser = (): boolean => {
   return false;
-}
+};
 
 // https://devsite.googleplex.com/datastudio/connector/reference#getconfig
-function getConfig(request: GetConfigRequest): GetConfigResponse {
+const getConfig = (request: GetConfigRequest): GetConfigResponse => {
   const config = cc.getConfig();
 
   config
@@ -38,10 +37,10 @@ function getConfig(request: GetConfigRequest): GetConfigResponse {
   config.setDateRangeRequired(true);
 
   return config.build();
-}
+};
 
 type Fields = GoogleAppsScript.Data_Studio.Fields;
-function getFields(): Fields {
+const getFields = (): Fields => {
   const fields = cc.getFields();
   const types = cc.FieldType;
   const aggregations = cc.AggregationType;
@@ -66,12 +65,12 @@ function getFields(): Fields {
     .setAggregation(aggregations.SUM);
 
   return fields;
-}
+};
 
 // https://devsite.googleplex.com/datastudio/connector/reference#getschema
-function getSchema(request: GetSchemaRequest): GetSchemaResponse {
+const getSchema = (request: GetSchemaRequest): GetSchemaResponse => {
   return { schema: getFields().build() };
-}
+};
 
 type DashedDate = string; // "2014-01-01"
 interface PackageData {
@@ -84,14 +83,14 @@ interface PackageData {
   package: string;
 }
 
-function logObject(s: any) {
+const logObject = (s: any) => {
   cc.newDebugError()
     .setText(JSON.stringify(s))
     .throwException();
-}
+};
 
 // https://devsite.googleplex.com/datastudio/connector/reference#getdata
-function getData(request: GetDataRequest): GetDataResponse {
+const getData = (request: GetDataRequest): GetDataResponse => {
   const configParams = cleanUpConfig(request.configParams);
   const requestedFields = getFields().forIds(
     request.fields.map(({ name }) => name)
@@ -133,26 +132,24 @@ function getData(request: GetDataRequest): GetDataResponse {
       )
       .throwException();
   }
-}
+};
 
-function cleanUpConfig(configParams: ConfigParams): ConfigParams {
+const cleanUpConfig = (configParams: ConfigParams): ConfigParams => {
   configParams = configParams || {};
   configParams.package = configParams.package || DEFAULT_PACKAGE;
 
   configParams.package = configParams.package
     .split(",")
-    .map(function(x) {
-      return x.trim();
-    })
+    .map(x => x.trim())
     .join(",");
 
   return configParams;
-}
+};
 
-function normalizeAPIResponse(
+const normalizeAPIResponse = (
   jsonString: string,
   bulkRequest: boolean = false
-): PackageData[] {
+): PackageData[] => {
   const parsed = JSON.parse(jsonString);
   if (bulkRequest) {
     // The bulk requests are keyed by package name, but since PackageData also
@@ -160,13 +157,13 @@ function normalizeAPIResponse(
     return Object.keys(parsed).map(parsedKey => parsed[parsedKey]);
   }
   return [parsed];
-}
+};
 
-function fetchPackagesData(
+const fetchPackagesData = (
   dateRange: GetDataRequest["dateRange"],
   packagesString: string,
   bulkRequest: boolean
-): PackageData[] {
+): PackageData[] => {
   // TODO - change to template string.
   const url = [
     "https://api.npmjs.org/downloads/range/",
@@ -180,18 +177,18 @@ function fetchPackagesData(
   const response = UrlFetchApp.fetch(url);
   const jsonString = response.getContentText();
   return normalizeAPIResponse(jsonString, bulkRequest);
-}
+};
 
-function toGetDataRows(
+const toGetDataRows = (
   response: PackageData[],
   requestedFields: Fields
-): GetDataRows {
+): GetDataRows => {
   const data: GetDataRows = [];
-  response.forEach(function(packageData: PackageData) {
-    packageData.downloads.forEach(function(downloads) {
+  response.forEach((packageData: PackageData) => {
+    packageData.downloads.forEach(downloads => {
       const row: GetDataRowValue[] = requestedFields
         .asArray()
-        .map(function(requestedField) {
+        .map(requestedField => {
           switch (requestedField.getId()) {
             case "day":
               return downloads.day.replace(/-/g, "");
@@ -207,4 +204,4 @@ function toGetDataRows(
     });
   });
   return data;
-}
+};
