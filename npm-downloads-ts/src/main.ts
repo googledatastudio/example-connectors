@@ -91,23 +91,17 @@ const logObject = (s: any) => {
 
 // https://devsite.googleplex.com/datastudio/connector/reference#getdata
 const getData = (request: GetDataRequest): GetDataResponse => {
-  const configParams = cleanUpConfig(request.configParams);
-  const requestedFields = getFields().forIds(
-    request.fields.map(({ name }) => name)
-  );
-
   try {
-    const { package } = configParams;
-    const packages = package.split(",");
+    const requestedFields = getFields().forIds(
+      request.fields.map(({ name }) => name)
+    );
+    let { package = DEFAULT_PACKAGE } = request.configParams;
+    const packages = package.split(",").map(s => s.trim());
     const scopedPackages = packages.filter(p => p[0] === "@");
     const nonScopedPackages = packages.filter(p => p[0] !== "@");
 
-    const scopedResponses = scopedPackages.reduce(
-      (responses: PackageData[], scopedPackage: string) =>
-        responses.concat(
-          fetchPackagesData(request.dateRange, scopedPackage, false)
-        ),
-      []
+    let scopedResponses = scopedPackages.map((scopedPackage: string) =>
+      fetchPackagesData(request.dateRange, scopedPackage, false)
     );
     const nonScopedResponse =
       nonScopedPackages.length > 0
@@ -117,9 +111,12 @@ const getData = (request: GetDataRequest): GetDataResponse => {
             nonScopedPackages.length > 1
           )
         : [];
+    let joinedResponses: PackageData[] = [];
+    scopedResponses.concat([nonScopedResponse]).forEach(scopedResponse => {
+      joinedResponses = joinedResponses.concat(scopedResponse);
+    });
 
-    const packagesData = scopedResponses.concat(nonScopedResponse);
-    const data = toGetDataRows(packagesData, requestedFields);
+    const data = toGetDataRows(joinedResponses, requestedFields);
     return {
       schema: requestedFields.build(),
       rows: data
@@ -132,18 +129,6 @@ const getData = (request: GetDataRequest): GetDataResponse => {
       )
       .throwException();
   }
-};
-
-const cleanUpConfig = (configParams: ConfigParams): ConfigParams => {
-  configParams = configParams || {};
-  configParams.package = configParams.package || DEFAULT_PACKAGE;
-
-  configParams.package = configParams.package
-    .split(",")
-    .map(x => x.trim())
-    .join(",");
-
-  return configParams;
 };
 
 const normalizeAPIResponse = (
