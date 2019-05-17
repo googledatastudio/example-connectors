@@ -2,14 +2,14 @@ const DEFAULT_PACKAGE = "@google/dscc-gen";
 
 // https://devsite.googleplex.com/datastudio/connector/reference#getauthtype
 function getAuthType(): GetAuthTypeResponse {
-  var AuthTypes = cc.AuthType;
+  const AuthTypes = cc.AuthType;
   return cc
     .newAuthTypeResponse()
     .setAuthType(AuthTypes.NONE)
     .build();
 }
 
-var cc = DataStudioApp.createCommunityConnector();
+const cc = DataStudioApp.createCommunityConnector();
 
 // https://devsite.googleplex.com/datastudio/connector/reference#isadminuser
 function isAdminUser(): boolean {
@@ -18,7 +18,7 @@ function isAdminUser(): boolean {
 
 // https://devsite.googleplex.com/datastudio/connector/reference#getconfig
 function getConfig(request: GetConfigRequest): GetConfigResponse {
-  var config = cc.getConfig();
+  const config = cc.getConfig();
 
   config
     .newInfo()
@@ -42,9 +42,9 @@ function getConfig(request: GetConfigRequest): GetConfigResponse {
 
 type Fields = GoogleAppsScript.Data_Studio.Fields;
 function getFields(): Fields {
-  var fields = cc.getFields();
-  var types = cc.FieldType;
-  var aggregations = cc.AggregationType;
+  const fields = cc.getFields();
+  const types = cc.FieldType;
+  const aggregations = cc.AggregationType;
 
   fields
     .newDimension()
@@ -113,8 +113,8 @@ function getData(request: GetDataRequest): GetDataResponse {
         ? fetchPackagesData(request.dateRange, nonScopedPackages.join(","))
         : [];
 
-    var packagesData = scopedResponses.concat(nonScopedResponse);
-    var data = toGetDataRows(packagesData, requestedFields);
+    const packagesData = scopedResponses.concat(nonScopedResponse);
+    const data = toGetDataRows(packagesData, requestedFields);
   } catch (e) {
     cc.newUserError()
       .setDebugText("Error fetching data from API. Exception details: " + e)
@@ -158,7 +158,7 @@ function fetchPackagesData(
   packagesString: string
 ): PackageData[] {
   // TODO - change to template string.
-  var url = [
+  const url = [
     "https://api.npmjs.org/downloads/range/",
     dateRange.startDate,
     ":",
@@ -166,8 +166,8 @@ function fetchPackagesData(
     "/",
     packagesString
   ].join("");
-  var response = UrlFetchApp.fetch(url);
-  var jsonString = response.getContentText();
+  const response = UrlFetchApp.fetch(url);
+  const jsonString = response.getContentText();
   return normalizeAPIResponse(jsonString);
 }
 
@@ -175,10 +175,10 @@ function toGetDataRows(
   response: PackageData[],
   requestedFields: Fields
 ): GetDataRows {
-  var data: GetDataRows = [];
+  const data: GetDataRows = [];
   response.forEach(function(packageData: PackageData) {
     packageData.downloads.forEach(function(downloads) {
-      var row: GetDataRowValue[] = requestedFields
+      const row: GetDataRowValue[] = requestedFields
         .asArray()
         .map(function(requestedField) {
           switch (requestedField.getId()) {
