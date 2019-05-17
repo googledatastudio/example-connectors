@@ -24,7 +24,6 @@ interface ConfigParams {
   [configId: string]: string;
 }
 interface GetDataRequest {
-  // TODO - verify whether is optional, or if it just an empty object.
   configParams?: ConfigParams;
   scriptParams: {
     sampleExtraction: boolean;

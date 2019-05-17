@@ -95,7 +95,7 @@ const getData = (request: GetDataRequest): GetDataResponse => {
     const requestedFields = getFields().forIds(
       request.fields.map(({ name }) => name)
     );
-    let { package = DEFAULT_PACKAGE } = request.configParams;
+    let { package = DEFAULT_PACKAGE } = request.configParams || {};
     const packages = package.split(",").map(s => s.trim());
     const scopedPackages = packages.filter(p => p[0] === "@");
     const nonScopedPackages = packages.filter(p => p[0] !== "@");
