@@ -1,9 +1,7 @@
 {
   "compilerOptions": {
-    "target": "es5",
-    "module": "None",
-    "strict": true,
-    "alwaysStrict": false,
-    "noImplicitUseStrict": true
+    "lib": ["esnext"],
+    "experimentalDecorators": true,
+    "types": ["google-apps-script"]
   }
 }

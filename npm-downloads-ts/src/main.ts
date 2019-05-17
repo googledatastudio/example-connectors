@@ -1,114 +1,3 @@
-interface AuthType {
-  NONE: AuthType;
-}
-
-interface FieldType {
-  NUMBER: FieldType;
-  TEXT: FieldType;
-}
-
-interface AggregationType {
-  SUM: AggregationType;
-}
-
-interface GetAuthTypeResponse {}
-
-interface AuthTypeResponseBuilder {
-  setAuthType: (authType: AuthType) => AuthTypeResponseBuilder;
-  build: () => GetAuthTypeResponse;
-}
-
-interface InfoBuilder {
-  setId: (id: string) => this;
-  setText: (text: string) => this;
-}
-
-interface SelectSingleBuilder {
-  setId: (id: string) => this;
-  setName: (name: string) => this;
-  setHelpText: (helpText: string) => this;
-  setAllowOverride: (allowOverride: boolean) => this;
-  addOption: (optionBuilder: OptionBuilder) => this;
-}
-
-interface OptionBuilder {
-  setLabel: (label: string) => this;
-  setValue: (value: string) => this;
-}
-
-interface GetConfigResponse {}
-
-interface GetConfigResponseBuilder {
-  newInfo: () => InfoBuilder;
-  newSelectSingle: () => SelectSingleBuilder;
-  newOptionBuilder: () => OptionBuilder;
-  build: () => GetConfigResponse;
-}
-
-interface FieldBuilder {
-  getId: () => string;
-  setId: (id: string) => this;
-  setName: (name: string) => this;
-  setType: (type: FieldType) => this;
-  setAggregation: (aggregation: AggregationType) => this;
-}
-
-interface Fields {}
-
-interface FieldsBuilder {
-  newDimension: () => FieldBuilder;
-  newMetric: () => FieldBuilder;
-  build: () => Fields;
-  forIds: (ids: string[]) => FieldsBuilder;
-  asArray: () => Array<FieldBuilder>;
-}
-
-interface CommunityConnector {
-  AuthType: AuthType;
-  FieldType: FieldType;
-  AggregationType: AggregationType;
-  newAuthTypeResponse: () => AuthTypeResponseBuilder;
-  getConfig: () => GetConfigResponseBuilder;
-  getFields: () => FieldsBuilder;
-}
-
-interface DataStudioApp {
-  createCommunityConnector: () => CommunityConnector;
-}
-
-interface GetSchemaRequest {}
-
-interface GetSchemaResponse {}
-
-interface GetConfigRequest {}
-
-interface GetDataField {
-  name: string;
-}
-
-interface GetDataRequest {
-  fields: Array<GetDataField>;
-  configParams: { [key: string]: string };
-}
-
-type GetDataRowValue = string | number | boolean;
-
-interface GetDataRow {
-  values: Array<GetDataRowValue>;
-}
-
-type GetDataRows = Array<GetDataRow>;
-
-interface GetDataResponse {
-  schema: Fields;
-  rows: GetDataRows;
-}
-
-declare const DataStudioApp: DataStudioApp;
-
-// TODO - make proper type.
-declare const UrlFetchApp: any;
-
 // https://devsite.googleplex.com/datastudio/connector/reference#getauthtype
 function getAuthType(): GetAuthTypeResponse {
   var AuthTypes = cc.AuthType;
@@ -158,7 +47,8 @@ function getConfig(request: GetConfigRequest): GetConfigResponse {
   return config.build();
 }
 
-function getFields(): FieldsBuilder {
+type Fields = GoogleAppsScript.Data_Studio.Fields;
+function getFields(): Fields {
   var fields = cc.getFields();
   var types = cc.FieldType;
   var aggregations = cc.AggregationType;
