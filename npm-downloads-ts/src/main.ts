@@ -104,9 +104,9 @@ const getData = (request: GetDataRequest): GetDataResponse => {
     const bulkRequestData = [bulkPackages.join(","), bulkPackages.length > 1];
     const nonBulkRequestData = nonBulkPackages.map(a => [a, false]);
 
-    const allRequestData = nonBulkRequestData.concat([bulkRequestData]);
+    const requestData = nonBulkRequestData.concat([bulkRequestData]);
 
-    const responses = allRequestData
+    const responses = requestData
       .map(([package, bulkRequest]: [string, boolean]) =>
         fetchPackagesData(request.dateRange, package, bulkRequest)
       )
