@@ -97,26 +97,22 @@ const getData = (request: GetDataRequest): GetDataResponse => {
     );
     let { package = DEFAULT_PACKAGE } = request.configParams || {};
     const packages = package.split(",").map(s => s.trim());
-    const scopedPackages = packages.filter(p => p[0] === "@");
-    const nonScopedPackages = packages.filter(p => p[0] !== "@");
 
-    let scopedResponses = scopedPackages.map((scopedPackage: string) =>
-      fetchPackagesData(request.dateRange, scopedPackage, false)
-    );
-    const nonScopedResponse =
-      nonScopedPackages.length > 0
-        ? fetchPackagesData(
-            request.dateRange,
-            nonScopedPackages.join(","),
-            nonScopedPackages.length > 1
-          )
-        : [];
-    let joinedResponses: PackageData[] = [];
-    scopedResponses.concat([nonScopedResponse]).forEach(scopedResponse => {
-      joinedResponses = joinedResponses.concat(scopedResponse);
-    });
+    const bulkPackages = packages.filter(p => p[0] !== "@");
+    const nonBulkPackages = packages.filter(p => p[0] === "@");
 
-    const data = toGetDataRows(joinedResponses, requestedFields);
+    const bulkRequestData = [bulkPackages.join(","), bulkPackages.length > 1];
+    const nonBulkRequestData = nonBulkPackages.map(a => [a, false]);
+
+    const allRequestData = nonBulkRequestData.concat([bulkRequestData]);
+
+    const responses = allRequestData
+      .map(([package, bulkRequest]: [string, boolean]) =>
+        fetchPackagesData(request.dateRange, package, bulkRequest)
+      )
+      .reduce((acc, a) => acc.concat(a), []);
+
+    const data = toGetDataRows(responses, requestedFields);
     return {
       schema: requestedFields.build(),
       rows: data

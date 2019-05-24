@@ -4,7 +4,7 @@
     "latest": "AKfycbx2x9uyLNDEHa5a-1S_rwIVnVZ3drTb8BNXIeJN_lg"
   },
   "scripts": {
-    "prettier": "prettier --write \"src/**/*.js\"",
+    "prettier": "prettier --write \"src/**/*.{js,ts}\"",
     "push": "dscc-scripts connector push_changes",
     "watch": "dscc-scripts connector watch_changes",
     "open": "dscc-scripts connector open_script",
