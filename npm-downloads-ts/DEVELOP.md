@@ -22,6 +22,19 @@ TypeScript.
     you own. **This project will be overwritten, so it's best to make a new
     project for this.**
 
+    The script id will be a part of the Apps Script url. If your apps script url
+    is
+
+    ```
+    https://script.google.com/d/1w9Nb7dbqj_QiSpFIpXRZ8KoXcg2wA9JoW6ZTkZxtiT1LaG2-29nrTUva/edit
+    ```
+
+    the script id will be
+
+    ```
+    1w9Nb7dbqj_QiSpFIpXRZ8KoXcg2wA9JoW6ZTkZxtiT1LaG2-29nrTUva
+    ```
+
 1.  Set up `dscc-scripts` to watch for (and push) local changes.
 
     ```sh
