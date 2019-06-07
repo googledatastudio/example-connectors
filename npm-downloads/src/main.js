@@ -204,7 +204,6 @@ function validateConfig(configParams) {
   return configParams;
 }
 
-
 /**
  * Formats a single row of data into the required format.
  *
