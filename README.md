@@ -40,4 +40,5 @@ Good example of:
 [`UrlFetchApp.fetch()`]: https://developers.google.com/apps-script/reference/url-fetch/url-fetch-app
 [DataStudio Service]: https://developers.google.com/apps-script/reference/data-studio/
 [NPM Downloads]: https://github.com/googledatastudio/example-connectors/tree/master/npm-downloads
+[TypeScript NPM Downloads]: https://github.com/googledatastudio/example-connectors/tree/master/npm-downloads-ts
 [package downloads count]: https://github.com/npm/registry/blob/master/docs/download-counts.md
