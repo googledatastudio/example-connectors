@@ -22,7 +22,7 @@ var cc = DataStudioApp.createCommunityConnector();
 var DEFAULT_PACKAGE = "googleapis";
 
 // [START get_config]
-// https://devsite.googleplex.com/datastudio/connector/reference#getconfig
+// https://developers.google.com/datastudio/connector/reference#getconfig
 function getConfig() {
   var config = cc.getConfig();
 
@@ -77,14 +77,14 @@ function getFields() {
   return fields;
 }
 
-// https://devsite.googleplex.com/datastudio/connector/reference#getschema
+// https://developers.google.com/datastudio/connector/reference#getschema
 function getSchema(request) {
   return { schema: getFields().build() };
 }
 // [END get_schema]
 
 // [START get_data]
-// https://devsite.googleplex.com/datastudio/connector/reference#getdata
+// https://developers.google.com/datastudio/connector/reference#getdata
 function getData(request) {
   request.configParams = validateConfig(request.configParams);
 
@@ -179,7 +179,7 @@ function getFormattedData(response, requestedFields) {
 }
 // [END get_data]
 
-// https://devsite.googleplex.com/datastudio/connector/reference#isadminuser
+// https://developers.google.com/datastudio/connector/reference#isadminuser
 function isAdminUser() {
   return false;
 }

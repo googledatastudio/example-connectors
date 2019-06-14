@@ -1,7 +1,7 @@
 const cc = DataStudioApp.createCommunityConnector();
 const DEFAULT_PACKAGE = "@google/dscc-gen";
 
-// https://devsite.googleplex.com/datastudio/connector/reference#getauthtype
+// https://developers.google.com/datastudio/connector/reference#getauthtype
 const getAuthType = (): GetAuthTypeResponse => {
   const AuthTypes = cc.AuthType;
   return cc
@@ -10,12 +10,12 @@ const getAuthType = (): GetAuthTypeResponse => {
     .build();
 };
 
-// https://devsite.googleplex.com/datastudio/connector/reference#isadminuser
+// https://developers.google.com/datastudio/connector/reference#isadminuser
 const isAdminUser = (): boolean => {
   return false;
 };
 
-// https://devsite.googleplex.com/datastudio/connector/reference#getconfig
+// https://developers.google.com/datastudio/connector/reference#getconfig
 const getConfig = (request: GetConfigRequest): GetConfigResponse => {
   const config = cc.getConfig();
 
@@ -67,7 +67,7 @@ const getFields = (): Fields => {
   return fields;
 };
 
-// https://devsite.googleplex.com/datastudio/connector/reference#getschema
+// https://developers.google.com/datastudio/connector/reference#getschema
 const getSchema = (request: GetSchemaRequest): GetSchemaResponse => {
   return { schema: getFields().build() };
 };
@@ -89,7 +89,7 @@ const logObject = (s: any) => {
     .throwException();
 };
 
-// https://devsite.googleplex.com/datastudio/connector/reference#getdata
+// https://developers.google.com/datastudio/connector/reference#getdata
 const getData = (request: GetDataRequest): GetDataResponse => {
   try {
     const requestedFields = getFields().forIds(
