@@ -1,0 +1,47 @@
+Arguments: 
+  /usr/bin/node /usr/share/yarn/bin/yarn.js add -D typescript
+
+PATH: 
+  /home/mjhamrick/.rbenv/shims:/home/mjhamrick/.cargo/bin:/usr/local/bin:/usr/bin:/bin:/usr/local/games:/usr/games:/home/mjhamrick/.cargo/bin:/home/mjhamrick/.local/bin:/home/mjhamrick/.yarn/bin:/home/mjhamrick/.rbenv/bin
+
+Yarn version: 
+  1.16.0
+
+Node version: 
+  8.16.0
+
+Platform: 
+  linux x64
+
+Trace: 
+  Error: getaddrinfo EAI_AGAIN registry.yarnpkg.com:443
+      at GetAddrInfoReqWrap.onlookup [as oncomplete] (dns.js:67:26)
+
+npm manifest: 
+  {
+    "dsccConnector": {
+      "production": "AKfycbxwSH47rWwToAc5f7vWKpNIpSYl2tlaHezH6kJ0cmDfjkA1pbCNwJZVvaLgy1yakixv1w",
+      "latest": "AKfycbxKSofZoxgFrRLnZIX1mvqHzm8jY7maQynki9DCvMOO"
+    },
+    "scripts": {
+      "prettier": "prettier --write \"src/**/*.js\"",
+      "push": "dscc-scripts connector push_changes",
+      "watch": "dscc-scripts connector watch_changes",
+      "open": "dscc-scripts connector open_script",
+      "open_template": "dscc-scripts connector open_template",
+      "try_production": "dscc-scripts connector try_production",
+      "try_latest": "dscc-scripts connector try_latest",
+      "update_production": "dscc-scripts connector update_production"
+    },
+    "devDependencies": {
+      "@google/clasp": "^2.1.0",
+      "@google/dscc-scripts": "^1.0.0",
+      "prettier": "^1.16.4"
+    }
+  }
+
+yarn manifest: 
+  No manifest
+
+Lockfile: 
+  No lockfile
