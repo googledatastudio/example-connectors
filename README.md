@@ -45,6 +45,7 @@ Highlighted Best Practices:
 +   Using a service account with OAuth2.
 +   Using [Data Studio Advanced Services].
 
+[Row-level Security]: https://github.com/googledatastudio/example-connectors/tree/master/row-level-security
 [Data Studio Advanced Services]: https://developers.google.com/datastudio/connector/advanced-services
 [Google Data Studio]: https://datastudio.google.com/
 [community-connectors]: https://developers.google.com/datastudio/connector/
