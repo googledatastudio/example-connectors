@@ -35,6 +35,17 @@ Good example of:
 
 +   Using TypeScript to help write less-buggy code.
 
+### [Row-level Security]
+
+This connector shows how you can use row-level security to ensure viewers of a
+report can only see data that they are allowed to see.
+
+Highlighted Best Practices:
+
++   Using a service account with OAuth2.
++   Using [Data Studio Advanced Services].
+
+[Data Studio Advanced Services]: https://developers.google.com/datastudio/connector/advanced-services
 [Google Data Studio]: https://datastudio.google.com/
 [community-connectors]: https://developers.google.com/datastudio/connector/
 [`UrlFetchApp.fetch()`]: https://developers.google.com/apps-script/reference/url-fetch/url-fetch-app
