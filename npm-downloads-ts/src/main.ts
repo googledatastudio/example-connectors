@@ -1,5 +1,5 @@
 const cc = DataStudioApp.createCommunityConnector();
-const DEFAULT_PACKAGE = "@google/dscc-gen";
+const DEFAULT_PACKAGE = '@google/dscc-gen';
 
 // https://developers.google.com/datastudio/connector/reference#getauthtype
 const getAuthType = (): GetAuthTypeResponse => {
@@ -21,15 +21,15 @@ const getConfig = (request: GetConfigRequest): GetConfigResponse => {
 
   config
     .newInfo()
-    .setId("instructions")
+    .setId('instructions')
     .setText(
-      "Enter one or more npm package names to fetch their download count."
+      'Enter one or more npm package names to fetch their download count.'
     );
 
   config
     .newTextInput()
-    .setId("package")
-    .setName("Enter one or more package names separated by commas.")
+    .setId('package')
+    .setName('Enter one or more package names separated by commas.')
     .setHelpText('e.g. "googleapis" or "@google/dscc-gen,@google/dscc-scripts"')
     .setPlaceholder(DEFAULT_PACKAGE)
     .setAllowOverride(true);
@@ -47,20 +47,20 @@ const getFields = (): Fields => {
 
   fields
     .newDimension()
-    .setId("packageName")
-    .setName("Package")
+    .setId('packageName')
+    .setName('Package')
     .setType(types.TEXT);
 
   fields
     .newDimension()
-    .setId("day")
-    .setName("Date")
+    .setId('day')
+    .setName('Date')
     .setType(types.YEAR_MONTH_DAY);
 
   fields
     .newMetric()
-    .setId("downloads")
-    .setName("Downloads")
+    .setId('downloads')
+    .setName('Downloads')
     .setType(types.NUMBER)
     .setAggregation(aggregations.SUM);
 
@@ -69,7 +69,7 @@ const getFields = (): Fields => {
 
 // https://developers.google.com/datastudio/connector/reference#getschema
 const getSchema = (request: GetSchemaRequest): GetSchemaResponse => {
-  return { schema: getFields().build() };
+  return {schema: getFields().build()};
 };
 
 type DashedDate = string; // "2014-01-01"
@@ -93,16 +93,16 @@ const logObject = (s: any) => {
 const getData = (request: GetDataRequest): GetDataResponse => {
   try {
     const requestedFields = getFields().forIds(
-      request.fields.map(({ name }) => name)
+      request.fields.map(({name}) => name)
     );
-    let { package = DEFAULT_PACKAGE } = request.configParams || {};
-    const packages = package.split(",").map(s => s.trim());
+    let {package = DEFAULT_PACKAGE} = request.configParams || {};
+    const packages = package.split(',').map((s) => s.trim());
 
-    const bulkPackages = packages.filter(p => p[0] !== "@");
-    const nonBulkPackages = packages.filter(p => p[0] === "@");
+    const bulkPackages = packages.filter((p) => p[0] !== '@');
+    const nonBulkPackages = packages.filter((p) => p[0] === '@');
 
-    const bulkRequestData = [bulkPackages.join(","), bulkPackages.length > 1];
-    const nonBulkRequestData = nonBulkPackages.map(a => [a, false]);
+    const bulkRequestData = [bulkPackages.join(','), bulkPackages.length > 1];
+    const nonBulkRequestData = nonBulkPackages.map((a) => [a, false]);
 
     const requestData = nonBulkRequestData.concat([bulkRequestData]);
 
@@ -119,9 +119,9 @@ const getData = (request: GetDataRequest): GetDataResponse => {
     };
   } catch (e) {
     cc.newUserError()
-      .setDebugText("Error fetching data from API. Exception details: " + e)
+      .setDebugText('Error fetching data from API. Exception details: ' + e)
       .setText(
-        "The connector has encountered an unrecoverable error. Please try again later, or file an issue if this error persists."
+        'The connector has encountered an unrecoverable error. Please try again later, or file an issue if this error persists.'
       )
       .throwException();
   }
@@ -135,17 +135,17 @@ const normalizeAPIResponse = (
   if (bulkRequest) {
     // The bulk requests are keyed by package name, but since PackageData also
     // has the name, we can just flatten this down.
-    return Object.keys(parsed).map(parsedKey => parsed[parsedKey]);
+    return Object.keys(parsed).map((parsedKey) => parsed[parsedKey]);
   }
   return [parsed];
 };
 
 const fetchPackagesData = (
-  dateRange: GetDataRequest["dateRange"],
+  dateRange: GetDataRequest['dateRange'],
   packagesString: string,
   bulkRequest: boolean
 ): PackageData[] => {
-  const { startDate, endDate } = dateRange;
+  const {startDate, endDate} = dateRange;
   const range = `${startDate}:${endDate}`;
   const url = `https://api.npmjs.org/downloads/range/${range}/${packagesString}`;
   const response = UrlFetchApp.fetch(url);
@@ -159,22 +159,22 @@ const toGetDataRows = (
 ): GetDataRows => {
   const data: GetDataRows = [];
   response.forEach((packageData: PackageData) => {
-    packageData.downloads.forEach(downloads => {
+    packageData.downloads.forEach((downloads) => {
       const row: GetDataRowValue[] = requestedFields
         .asArray()
-        .map(requestedField => {
+        .map((requestedField) => {
           switch (requestedField.getId()) {
-            case "day":
-              return downloads.day.replace(/-/g, "");
-            case "downloads":
+            case 'day':
+              return downloads.day.replace(/-/g, '');
+            case 'downloads':
               return downloads.downloads;
-            case "packageName":
+            case 'packageName':
               return packageData.package;
             default:
-              return "";
+              return '';
           }
         });
-      data.push({ values: row });
+      data.push({values: row});
     });
   });
   return data;

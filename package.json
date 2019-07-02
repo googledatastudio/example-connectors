@@ -3,8 +3,8 @@
   "author": "Matt Hamrick <matthewjhamrick@gmail.com>",
   "license": "Apache-2.0",
   "scripts": {
-    "prettier": "prettier --write '**/*.js' '**/*.json' '**/*.ts'",
-    "prettier:check": "prettier --check '**/*.js' '**/*.json' '**/*.ts'",
+    "prettier": "prettier --write '**/*.js' 'package.json' '**/package.json' '**/*.ts'",
+    "prettier:check": "prettier --check '**/*.js' 'package.json' '**/package.json' '**/*.ts'",
     "fix": "yarn prettier",
     "travis": "yarn prettier:check"
   },
