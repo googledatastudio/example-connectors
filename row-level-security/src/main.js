@@ -19,9 +19,7 @@ function getConfig(request) {
   config
     .newInfo()
     .setId('generalInfo')
-    .setText(
-      'This is an example connector to showcase row level security.'
-    );
+    .setText('This is an example connector to showcase row level security.');
 
   return config.build();
 }
@@ -50,7 +48,7 @@ function getFields() {
     .setName('Date')
     .setType(types.YEAR_MONTH_DAY);
 
-    return fields;
+  return fields;
 }
 
 function getSchema(request) {
@@ -101,7 +99,7 @@ function getData(request) {
   var email = Session.getEffectiveUser().getEmail();
 
   var bqTypes = DataStudioApp.createCommunityConnector().BigQueryParameterType;
-  
+
   return cc
     .newBigQueryConfig()
     .setAccessToken(accessToken)
