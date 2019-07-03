@@ -5,17 +5,17 @@
  */
 
 function getData(request) {
-    var requestedFields = getFields().forIds(
-        request.fields.map(function(field) {
-            return field.name;
-        })
-    );
+  var requestedFields = getFields().forIds(
+    request.fields.map(function(field) {
+      return field.name;
+    })
+  );
 
-    var fetchedData = fetchAndParseData(request);
-    var data = getFormattedData(fetchedData, requestedFields);
+  var fetchedData = fetchAndParseData(request);
+  var data = getFormattedData(fetchedData, requestedFields);
 
-    return {
-        schema: requestedFields.build(),
-        rows: data
-    };
+  return {
+    schema: requestedFields.build(),
+    rows: data
+  };
 }

@@ -114,6 +114,9 @@ function getOauthService() {
     .setIssuer(serviceAccountEmail)
     .setPropertyStore(scriptProperties)
     .setCache(CacheService.getScriptCache())
-    .setScope(['https://www.googleapis.com/auth/userinfo.email', 'https://www.googleapis.com/auth/firebase.database']);
+    .setScope([
+      'https://www.googleapis.com/auth/userinfo.email',
+      'https://www.googleapis.com/auth/firebase.database'
+    ]);
 }
 // [END service_account_init]
