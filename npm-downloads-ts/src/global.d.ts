@@ -74,5 +74,5 @@ type SetCredentialsRequest =
   | KeyCredentials;
 
 interface SetCredentialsResponse {
-  errorCode: "NONE" | "INVALID_CREDENTIALS";
+  errorCode: 'NONE' | 'INVALID_CREDENTIALS';
 }

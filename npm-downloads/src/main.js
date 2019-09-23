@@ -19,7 +19,7 @@
  */
 
 var cc = DataStudioApp.createCommunityConnector();
-var DEFAULT_PACKAGE = "googleapis";
+var DEFAULT_PACKAGE = 'googleapis';
 
 // [START get_config]
 // https://developers.google.com/datastudio/connector/reference#getconfig
@@ -28,16 +28,16 @@ function getConfig() {
 
   config
     .newInfo()
-    .setId("instructions")
+    .setId('instructions')
     .setText(
-      "Enter npm package names to fetch their download count. An invalid or blank entry will revert to the default value."
+      'Enter npm package names to fetch their download count. An invalid or blank entry will revert to the default value.'
     );
 
   config
     .newTextInput()
-    .setId("package")
+    .setId('package')
     .setName(
-      "Enter a single package name or multiple names separated by commas (no spaces!)"
+      'Enter a single package name or multiple names separated by commas (no spaces!)'
     )
     .setHelpText('e.g. "googleapis" or "package,somepackage,anotherpackage"')
     .setPlaceholder(DEFAULT_PACKAGE)
@@ -57,20 +57,20 @@ function getFields() {
 
   fields
     .newDimension()
-    .setId("packageName")
-    .setName("Package")
+    .setId('packageName')
+    .setName('Package')
     .setType(types.TEXT);
 
   fields
     .newDimension()
-    .setId("day")
-    .setName("Date")
+    .setId('day')
+    .setName('Date')
     .setType(types.YEAR_MONTH_DAY);
 
   fields
     .newMetric()
-    .setId("downloads")
-    .setName("Downloads")
+    .setId('downloads')
+    .setName('Downloads')
     .setType(types.NUMBER)
     .setAggregation(aggregations.SUM);
 
@@ -79,7 +79,7 @@ function getFields() {
 
 // https://developers.google.com/datastudio/connector/reference#getschema
 function getSchema(request) {
-  return { schema: getFields().build() };
+  return {schema: getFields().build()};
 }
 // [END get_schema]
 
@@ -100,9 +100,9 @@ function getData(request) {
     var data = getFormattedData(normalizedResponse, requestedFields);
   } catch (e) {
     cc.newUserError()
-      .setDebugText("Error fetching data from API. Exception details: " + e)
+      .setDebugText('Error fetching data from API. Exception details: ' + e)
       .setText(
-        "The connector has encountered an unrecoverable error. Please try again later, or file an issue if this error persists."
+        'The connector has encountered an unrecoverable error. Please try again later, or file an issue if this error persists.'
       )
       .throwException();
   }
@@ -121,13 +121,13 @@ function getData(request) {
  */
 function fetchDataFromApi(request) {
   var url = [
-    "https://api.npmjs.org/downloads/range/",
+    'https://api.npmjs.org/downloads/range/',
     request.dateRange.startDate,
-    ":",
+    ':',
     request.dateRange.endDate,
-    "/",
+    '/',
     request.configParams.package
-  ].join("");
+  ].join('');
   var response = UrlFetchApp.fetch(url);
   return response;
 }
@@ -143,7 +143,7 @@ function fetchDataFromApi(request) {
  */
 function normalizeResponse(request, responseString) {
   var response = JSON.parse(responseString);
-  var package_list = request.configParams.package.split(",");
+  var package_list = request.configParams.package.split(',');
   var mapped_response = {};
 
   if (package_list.length == 1) {
@@ -195,11 +195,11 @@ function validateConfig(configParams) {
   configParams.package = configParams.package || DEFAULT_PACKAGE;
 
   configParams.package = configParams.package
-    .split(",")
+    .split(',')
     .map(function(x) {
       return x.trim();
     })
-    .join(",");
+    .join(',');
 
   return configParams;
 }
@@ -216,15 +216,15 @@ function validateConfig(configParams) {
 function formatData(requestedFields, packageName, dailyDownload) {
   var row = requestedFields.asArray().map(function(requestedField) {
     switch (requestedField.getId()) {
-      case "day":
-        return dailyDownload.day.replace(/-/g, "");
-      case "downloads":
+      case 'day':
+        return dailyDownload.day.replace(/-/g, '');
+      case 'downloads':
         return dailyDownload.downloads;
-      case "packageName":
+      case 'packageName':
         return packageName;
       default:
-        return "";
+        return '';
     }
   });
-  return { values: row };
+  return {values: row};
 }

@@ -12,10 +12,10 @@ function getConfig(request) {
   var config = cc.getConfig();
 
   config
-  .newTextInput()
-  .setId('zipcode')
-  .setName('Enter Zip Code')
-  .setPlaceholder('eg. 95054');
+    .newTextInput()
+    .setId('zipcode')
+    .setName('Enter Zip Code')
+    .setPlaceholder('eg. 95054');
 
   return config.build();
 }
@@ -56,7 +56,33 @@ function getSchema(request) {
 
 // [[start caching_implementation]]
 function getData(request) {
+  var requestedFields = getFields().forIds(
+    request.fields.map(function(field) {
+      return field.name;
+    })
+  );
 
+  var cacheUpdateNeeded = true;
+  var url = buildFirebaseUrl(request.configParams.zipcode);
+  var cache = firebaseCache('get', url);
+
+  if (cache) {
+    var currentYmd = getCurrentYmd();
+    cacheUpdateNeeded = currentYmd > cache.ymd;
+  }
+
+  if (cacheUpdateNeeded) {
+    var fetchedData = fetchAndParseData(request);
+    cache = {};
+    cache.data = fetchedData;
+    cache.ymd = currentYmd;
+    firebaseCache('delete', url);
+    firebaseCache('post', url, cache);
+  }
+
+  var data = getFormattedData(cache.data, requestedFields);
+
+<<<<<<< HEAD
     var requestedFields = getFields().forIds(
         request.fields.map(function(field) {
             return field.name;
@@ -94,21 +120,28 @@ function getCachedData(request){
     };
 
     return cachedData.data;
+=======
+  return {
+    schema: requestedFields.build(),
+    rows: data
+  };
+>>>>>>> 00868e25016aa540f4e34f758b47b017982c825d
 }
 
 function getCurrentYmd() {
-    var currentDate = new Date();
-    var year = currentDate.getFullYear();
-    var month = ('0' + (currentDate.getMonth() + 1)).slice(-2); 
-    var date = ('0' + currentDate.getDate()).slice(-2);
-    var currentYmd = year + month + date;
-    return currentYmd;
+  var currentDate = new Date();
+  var year = currentDate.getFullYear();
+  var month = ('0' + (currentDate.getMonth() + 1)).slice(-2);
+  var date = ('0' + currentDate.getDate()).slice(-2);
+  var currentYmd = year + month + date;
+  return currentYmd;
 }
 
 // [[end caching_implementation]]
 
 // [[start common_getdata_implementation]]
 function fetchAndParseData(request) {
+<<<<<<< HEAD
     // TODO: Connect to your own API endpoint and parse the fetched data.
     // To keep this example simple, we are returning dummy data instead of
     // connecting to an enpoint. This does not affect the caching.
@@ -121,59 +154,75 @@ function getFormattedData(fetchedData, requestedFields) {
         return formatData(rowData, requestedFields);
     });
     return data;
+=======
+  // You will connect to your own API endpoint and parse the fetched data.
+  // To keep the example simple, we are returning dummy data instead of
+  // connecting to an enpoint. This does not affect the caching.
+  var parsedData = sampleData;
+  return parsedData;
+}
+
+function getFormattedData(fetchedData, requestedFields) {
+  var data = [];
+  fetchedData.map(function(rowData) {
+    var formattedData = formatData(rowData, requestedFields);
+    data = data.concat(formattedData);
+  });
+  return data;
+>>>>>>> 00868e25016aa540f4e34f758b47b017982c825d
 }
 
 function formatData(rowData, requestedFields) {
-    var row = requestedFields.asArray().map(function(requestedField) {
-      switch (requestedField.getId()) {
-        case "date":
-            return rowData.date;
-        case "zipcode":
-            return rowData.zipcode;
-        case "temperature":
-            return rowData.temperature;
-        default:
-          return "";
-      }
-    });
-    return { values: row };
+  var row = requestedFields.asArray().map(function(requestedField) {
+    switch (requestedField.getId()) {
+      case 'date':
+        return rowData.date;
+      case 'zipcode':
+        return rowData.zipcode;
+      case 'temperature':
+        return rowData.temperature;
+      default:
+        return '';
+    }
+  });
+  return {values: row};
 }
 // [[end common_getdata_implementation]]
 
 var sampleData = [
-    {
-        date: '20190601',
-        zipcode: '95054',
-        temperature: 80
-    },
-    {
-        date: '20190602',
-        zipcode: '95054',
-        temperature: 82
-    },
-    {
-        date: '20190603',
-        zipcode: '95054',
-        temperature: 82
-    },
-    {
-        date: '20190604',
-        zipcode: '95054',
-        temperature: 85
-    },
-    {
-        date: '20190605',
-        zipcode: '95054',
-        temperature: 84
-    },
-    {
-        date: '20190606',
-        zipcode: '95054',
-        temperature: 83
-    },
-    {
-        date: '20190607',
-        zipcode: '95054',
-        temperature: 81
-    }
+  {
+    date: '20190601',
+    zipcode: '95054',
+    temperature: 80
+  },
+  {
+    date: '20190602',
+    zipcode: '95054',
+    temperature: 82
+  },
+  {
+    date: '20190603',
+    zipcode: '95054',
+    temperature: 82
+  },
+  {
+    date: '20190604',
+    zipcode: '95054',
+    temperature: 85
+  },
+  {
+    date: '20190605',
+    zipcode: '95054',
+    temperature: 84
+  },
+  {
+    date: '20190606',
+    zipcode: '95054',
+    temperature: 83
+  },
+  {
+    date: '20190607',
+    zipcode: '95054',
+    temperature: 81
+  }
 ];

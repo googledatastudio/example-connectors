@@ -1,0 +1,21 @@
+{
+  "name": "example-connectors",
+  "author": "Matt Hamrick <matthewjhamrick@gmail.com>",
+  "license": "Apache-2.0",
+  "scripts": {
+    "prettier": "prettier --write '**/*.js' 'package.json' '**/package.json' '**/*.ts'",
+    "prettier:check": "prettier --check '**/*.js' 'package.json' '**/package.json' '**/*.ts'",
+    "fix": "yarn prettier",
+    "travis": "yarn prettier:check"
+  },
+  "prettier": {
+    "singleQuote": true,
+    "trailingComma": "none",
+    "bracketSpacing": false,
+    "arrowParens": "always",
+    "endOfLine": "lf"
+  },
+  "devDependencies": {
+    "prettier": "^1.17.0"
+  }
+}
