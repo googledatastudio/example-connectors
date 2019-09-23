@@ -63,31 +63,37 @@ function getData(request) {
         })
     );
 
-    var cacheUpdateNeeded = true;
-    var url = buildFirebaseUrl(request.configParams.zipcode);
-    var cache = firebaseCache('get', url);
-    
-    if (cache) {
-        var currentYmd = getCurrentYmd();
-        cacheUpdateNeeded = currentYmd > cache.ymd;
-    };
-
-    if (cacheUpdateNeeded) {
-        var fetchedData = fetchAndParseData(request);
-        cache = {};
-        cache.data = fetchedData;
-        cache.ymd = currentYmd;
-        firebaseCache('delete', url);
-        firebaseCache('post', url, cache);
-    };
-
-    var data = getFormattedData(cache.data, requestedFields);
+    var cache = getCachedData(request);
+    var data = getFormattedData(cache, requestedFields);
 
     return {
         schema: requestedFields.build(),
         rows: data
     };
 
+}
+
+function getCachedData(request){
+    var cacheUpdateNeeded = true;
+    var url = buildFirebaseUrl(request.configParams.zipcode);
+    var cachedData = getFromCache(url);
+    var currentYmd = getCurrentYmd();
+    
+    if (cachedData) {
+        cacheUpdateNeeded = currentYmd > cachedData.ymd;
+    };
+
+    if (cacheUpdateNeeded) {
+        var fetchedData = fetchAndParseData(request);
+        freshData = {};
+        freshData.data = fetchedData;
+        freshData.ymd = currentYmd;
+        deleteFromCache(url);
+        putInCache(url, freshData);
+        cachedData = freshData;
+    };
+
+    return cachedData.data;
 }
 
 function getCurrentYmd() {
@@ -103,18 +109,16 @@ function getCurrentYmd() {
 
 // [[start common_getdata_implementation]]
 function fetchAndParseData(request) {
-    // You will connect to your own API endpoint and parse the fetched data.
-    // To keep the example simple, we are returning dummy data instead of
+    // TODO: Connect to your own API endpoint and parse the fetched data.
+    // To keep this example simple, we are returning dummy data instead of
     // connecting to an enpoint. This does not affect the caching.
     var parsedData = sampleData;
     return parsedData;
 }
 
 function getFormattedData(fetchedData, requestedFields) {
-    var data = [];
-    fetchedData.map(function(rowData) {
-        var formattedData = formatData(rowData, requestedFields);
-        data = data.concat(formattedData);
+    var data = fetchedData.map(function(rowData) {
+        return formatData(rowData, requestedFields);
     });
     return data;
 }

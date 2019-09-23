@@ -16,7 +16,7 @@
     "logoUrl": "https://www.gstatic.com/images/icons/material/system/2x/data_table_black_48dp.png",
     "company": "Data Studio DevRel",
     "companyUrl": "https://developers.google.com/datastudio/",
-    "addonUrl": "https://github.com/googledatastudio/example-connectors",
+    "addonUrl": "https://github.com/googledatastudio/example-connectors/firestore-cache",
     "supportUrl": "https://github.com/googledatastudio/example-connectors/issues",
     "description": "Firebase Realtime Database Caching Example"
   }

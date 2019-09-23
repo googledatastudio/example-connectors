@@ -1,7 +1,7 @@
 // [[start firebase_access_implementation]]
 
-FIREBASE_REALTIME_DB_BASE_URL = '.firebaseio.com';
-FIREBASE_REALTIME_DB_COLLECTION = '/cache';
+var FIREBASE_REALTIME_DB_BASE_URL = '.firebaseio.com';
+var FIREBASE_REALTIME_DB_COLLECTION = '/cache';
 
 /**
  * Returns the URL for a file in a firebase database.
@@ -71,20 +71,19 @@ function firebaseCache(method, url, data) {
   }
 }
 
-// [[end firebase_access_implementation]]
-
-/**
- * Deletes the entire Firestore cache
- *
- * @param {string} projectId The project Id used for Firestore
- *
- */
-function flushFirebaseCache(projectId) {
-  var oAuthToken = getOauthService().getAccessToken();
-  var serviceAccountCreds = getServiceAccountCreds();
-  var billingProjectId = serviceAccountCreds[BILLING_PROJECT_ID];
-  firebaseCache('delete', oAuthToken, fbUrl);
+function getFromCache(url) {
+  return firebaseCache('get', url);
 }
+
+function deleteFromCache(url) {
+  return firebaseCache('delete', url);
+}
+
+function putInCache(url, data) {
+  return firebaseCache('put', url, data);
+}
+
+// [[end firebase_access_implementation]]
 
 // [START service_account_init]
 var SERVICE_ACCOUNT_CREDS = 'SERVICE_ACCOUNT_CREDS';
