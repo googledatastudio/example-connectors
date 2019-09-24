@@ -82,43 +82,42 @@ function getData(request) {
 
   var data = getFormattedData(cache.data, requestedFields);
 
-    var requestedFields = getFields().forIds(
-        request.fields.map(function(field) {
-            return field.name;
-        })
-    );
+  var requestedFields = getFields().forIds(
+    request.fields.map(function(field) {
+      return field.name;
+    })
+  );
 
-    var cache = getCachedData(request);
-    var data = getFormattedData(cache, requestedFields);
+  var cache = getCachedData(request);
+  var data = getFormattedData(cache, requestedFields);
 
-    return {
-        schema: requestedFields.build(),
-        rows: data
-    };
-
+  return {
+    schema: requestedFields.build(),
+    rows: data
+  };
 }
 
-function getCachedData(request){
-    var cacheUpdateNeeded = true;
-    var url = buildFirebaseUrl(request.configParams.zipcode);
-    var cachedData = getFromCache(url);
-    var currentYmd = getCurrentYmd();
-    
-    if (cachedData) {
-        cacheUpdateNeeded = currentYmd > cachedData.ymd;
-    };
+function getCachedData(request) {
+  var cacheUpdateNeeded = true;
+  var url = buildFirebaseUrl(request.configParams.zipcode);
+  var cachedData = getFromCache(url);
+  var currentYmd = getCurrentYmd();
 
-    if (cacheUpdateNeeded) {
-        var fetchedData = fetchAndParseData(request);
-        freshData = {};
-        freshData.data = fetchedData;
-        freshData.ymd = currentYmd;
-        deleteFromCache(url);
-        putInCache(url, freshData);
-        cachedData = freshData;
-    };
+  if (cachedData) {
+    cacheUpdateNeeded = currentYmd > cachedData.ymd;
+  }
 
-    return cachedData.data;
+  if (cacheUpdateNeeded) {
+    var fetchedData = fetchAndParseData(request);
+    freshData = {};
+    freshData.data = fetchedData;
+    freshData.ymd = currentYmd;
+    deleteFromCache(url);
+    putInCache(url, freshData);
+    cachedData = freshData;
+  }
+
+  return cachedData.data;
 }
 
 function getCurrentYmd() {
@@ -134,18 +133,18 @@ function getCurrentYmd() {
 
 // [[start common_getdata_implementation]]
 function fetchAndParseData(request) {
-    // TODO: Connect to your own API endpoint and parse the fetched data.
-    // To keep this example simple, we are returning dummy data instead of
-    // connecting to an enpoint. This does not affect the caching.
-    var parsedData = sampleData;
-    return parsedData;
+  // TODO: Connect to your own API endpoint and parse the fetched data.
+  // To keep this example simple, we are returning dummy data instead of
+  // connecting to an enpoint. This does not affect the caching.
+  var parsedData = sampleData;
+  return parsedData;
 }
 
 function getFormattedData(fetchedData, requestedFields) {
-    var data = fetchedData.map(function(rowData) {
-        return formatData(rowData, requestedFields);
-    });
-    return data;
+  var data = fetchedData.map(function(rowData) {
+    return formatData(rowData, requestedFields);
+  });
+  return data;
 }
 
 function formatData(rowData, requestedFields) {
