@@ -82,7 +82,6 @@ function getData(request) {
 
   var data = getFormattedData(cache.data, requestedFields);
 
-<<<<<<< HEAD
     var requestedFields = getFields().forIds(
         request.fields.map(function(field) {
             return field.name;
@@ -120,12 +119,6 @@ function getCachedData(request){
     };
 
     return cachedData.data;
-=======
-  return {
-    schema: requestedFields.build(),
-    rows: data
-  };
->>>>>>> 00868e25016aa540f4e34f758b47b017982c825d
 }
 
 function getCurrentYmd() {
@@ -141,7 +134,6 @@ function getCurrentYmd() {
 
 // [[start common_getdata_implementation]]
 function fetchAndParseData(request) {
-<<<<<<< HEAD
     // TODO: Connect to your own API endpoint and parse the fetched data.
     // To keep this example simple, we are returning dummy data instead of
     // connecting to an enpoint. This does not affect the caching.
@@ -154,22 +146,6 @@ function getFormattedData(fetchedData, requestedFields) {
         return formatData(rowData, requestedFields);
     });
     return data;
-=======
-  // You will connect to your own API endpoint and parse the fetched data.
-  // To keep the example simple, we are returning dummy data instead of
-  // connecting to an enpoint. This does not affect the caching.
-  var parsedData = sampleData;
-  return parsedData;
-}
-
-function getFormattedData(fetchedData, requestedFields) {
-  var data = [];
-  fetchedData.map(function(rowData) {
-    var formattedData = formatData(rowData, requestedFields);
-    data = data.concat(formattedData);
-  });
-  return data;
->>>>>>> 00868e25016aa540f4e34f758b47b017982c825d
 }
 
 function formatData(rowData, requestedFields) {
