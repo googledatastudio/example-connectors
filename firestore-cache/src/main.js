@@ -135,7 +135,7 @@ function getCurrentYmd() {
 function fetchAndParseData(request) {
   // TODO: Connect to your own API endpoint and parse the fetched data.
   // To keep this example simple, we are returning dummy data instead of
-  // connecting to an enpoint. This does not affect the caching.
+  // connecting to an endpoint. This does not affect the caching.
   var parsedData = sampleData;
   return parsedData;
 }
