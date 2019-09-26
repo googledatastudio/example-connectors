@@ -5,16 +5,6 @@ _This is not an official Google product._
 This [Community Connector] shows how you can create a [stepped configuration] to
 dynamically populate a city dropdown with options based on the selected state.
 
-## Configuration
-
-1.  First enter a state. The options are `California` & `Illinois`.
-1.  Click next.
-1.  Choose a city.
-    +   If you selected `California` for the first question, your options will
-        be `Montain View` or `San Fransisco`.
-    +   If you selected `Illinois` for the first question, your options will be
-        `Chicago` or `Springfield`.
-
 ## Set up this connector for personal use
 
 To use this Community Connector in Data Studio there is a one-time setup to
@@ -32,6 +22,16 @@ Once you've set up and deployed the connector, follow the
 **Note**: After using the connector in Data Studio, as long as you do not
 [revoke access], it will remain listed in the [connector list] for easy access
 when [creating a new data source].
+
+## Trying out the config
+
+1.  First enter a state. The options are `California` & `Illinois`.
+1.  Click next.
+1.  Choose a city.
+    +   If you selected `California` for the first question, your options will
+        be `Montain View` or `San Fransisco`.
+    +   If you selected `Illinois` for the first question, your options will be
+        `Chicago` or `Springfield`.
 
 ## Report An Issue
 
