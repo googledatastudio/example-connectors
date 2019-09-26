@@ -1,0 +1,23 @@
+{
+  "timeZone": "America/Los_Angeles",
+  "oauthScopes": ["https://www.googleapis.com/auth/script.external_request"],
+  "dependencies": {
+    "libraries": [
+      {
+        "userSymbol": "OAuth2",
+        "libraryId": "1B7FSrk5Zi6L1rSxxTDgDEUsPzlukDsi4KGuTMorsTQHhGBzBkMun4iDF",
+        "version": "33"
+      }
+    ]
+  },
+  "exceptionLogging": "STACKDRIVER",
+  "dataStudio": {
+    "name": "Firebase Realtime Database Caching Example",
+    "logoUrl": "https://www.gstatic.com/images/icons/material/system/2x/data_table_black_48dp.png",
+    "company": "Data Studio DevRel",
+    "companyUrl": "https://developers.google.com/datastudio/",
+    "addonUrl": "https://github.com/googledatastudio/example-connectors/firestore-cache",
+    "supportUrl": "https://github.com/googledatastudio/example-connectors/issues",
+    "description": "Firebase Realtime Database Caching Example"
+  }
+}
