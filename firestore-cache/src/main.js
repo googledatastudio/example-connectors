@@ -1,4 +1,4 @@
-// [[start common_connector_code]]
+// [start common_connector_code]
 var cc = DataStudioApp.createCommunityConnector();
 
 function getAuthType() {
@@ -52,9 +52,9 @@ function getSchema(request) {
     schema: getFields().build()
   };
 }
-// [[end common_connector_code]]
+// [end common_connector_code]
 
-// [[start caching_implementation]]
+// [start caching_implementation]
 function getData(request) {
   var requestedFields = getFields().forIds(
     request.fields.map(function(field) {
@@ -129,9 +129,9 @@ function getCurrentYmd() {
   return currentYmd;
 }
 
-// [[end caching_implementation]]
+// [end caching_implementation]
 
-// [[start common_getdata_implementation]]
+// [start common_getdata_implementation]
 function fetchAndParseData(request) {
   // TODO: Connect to your own API endpoint and parse the fetched data.
   // To keep this example simple, we are returning dummy data instead of
@@ -162,7 +162,7 @@ function formatData(rowData, requestedFields) {
   });
   return {values: row};
 }
-// [[end common_getdata_implementation]]
+// [end common_getdata_implementation]
 
 var sampleData = [
   {
