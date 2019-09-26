@@ -38,22 +38,22 @@ function getConfig(request) {
     .newSelectSingle()
     .setId('state')
     .setName('State')
-  // Changing this field changes the options that are provided below. Setting
-  // isDynamic(true), will cause DS to clear later config answers if the user
-  // changes the state.
-      .setIsDynamic(true)
-      .addOption(
-          config
-            .newOptionBuilder()
-            .setLabel('Illinois')
-            .setValue('IL')
-      )
-      .addOption(
-          config
-            .newOptionBuilder()
-            .setLabel('California')
-            .setValue('CA')
-      );
+    // Changing this field changes the options that are provided below. Setting
+    // isDynamic(true), will cause DS to clear later config answers if the user
+    // changes the state.
+    .setIsDynamic(true)
+    .addOption(
+      config
+        .newOptionBuilder()
+        .setLabel('Illinois')
+        .setValue('IL')
+    )
+    .addOption(
+      config
+        .newOptionBuilder()
+        .setLabel('California')
+        .setValue('CA')
+    );
 
   if (isFirstRequest) {
     // Tell DS that this is a stepped config request. This will make the 'NEXT'
@@ -74,10 +74,10 @@ function getConfig(request) {
     var cityOptions = optionsForState(configParams.state);
     cityOptions.forEach(function(option) {
       city.addOption(
-          config
+        config
           .newOptionBuilder()
-            .setLabel(option.label)
-            .setValue(option.value)
+          .setLabel(option.label)
+          .setValue(option.value)
       );
     });
   }
@@ -101,12 +101,12 @@ function getFields() {
     .setType(types.TEXT);
 
   fields
-  // This isn't strictly necessary, but having a metric makes this connector
-  // work with more chart types.
-      .newMetric()
-      .setId('always_one')
-      .setName('Always One')
-      .setType(types.NUMBER);
+    // This isn't strictly necessary, but having a metric makes this connector
+    // work with more chart types.
+    .newMetric()
+    .setId('always_one')
+    .setName('Always One')
+    .setType(types.NUMBER);
 
   return fields;
 }
