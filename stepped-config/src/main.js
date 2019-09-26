@@ -8,10 +8,16 @@ function isAdminUser() {
 function optionsForState(state) {
   switch (state) {
     case 'IL': {
-      return [['Chicago', 'CHI'], ['Springfield', 'SPI']];
+      return [
+        {label: 'Chicago', value: 'CHI'},
+        {label: 'Springfield', value: 'SPI'}
+      ];
     }
     case 'CA': {
-      return [['Mountain View', 'MTV'], ['San Francisco', 'SFO']];
+      return [
+        {label: 'Mountain View', value: 'MTV'},
+        {label: 'San Francisco', value: 'SFO'}
+      ];
     }
     default: {
       cc.newUserError()
@@ -59,14 +65,12 @@ function getConfig(request) {
       .setName('City');
     // In a real connector, optionsForState would fetch the choices from an endpoint.
     var cityOptions = optionsForState(configParams.state);
-    cityOptions.forEach(function(labelAndValue) {
-      var cityLabel = labelAndValue[0];
-      var cityValue = labelAndValue[1];
+    cityOptions.forEach(function(option) {
       city.addOption(
-        config
+          config
           .newOptionBuilder()
-          .setLabel(cityLabel)
-          .setValue(cityValue)
+            .setLabel(option.label)
+            .setValue(option.value)
       );
     });
   }
