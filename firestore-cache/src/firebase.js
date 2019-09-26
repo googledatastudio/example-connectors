@@ -1,6 +1,5 @@
 // [start firebase_access_implementation]
 
-
 var FIREBASE_REALTIME_DB_BASE_URL = '.firebaseio.com';
 var FIREBASE_REALTIME_DB_COLLECTION = '/cache';
 
@@ -85,7 +84,6 @@ function putInCache(url, data) {
 }
 
 // [end firebase_access_implementation]
-
 
 // [START service_account_init]
 var SERVICE_ACCOUNT_CREDS = 'SERVICE_ACCOUNT_CREDS';
