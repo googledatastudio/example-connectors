@@ -1,9 +1,10 @@
-var cc = DataStudioApp.createCommunityConnector();
-
 // https://developers.google.com/datastudio/connector/reference#isadminuser
 function isAdminUser() {
   return false;
 }
+
+// [start get_config_dynamic_dropdowns]
+var cc = DataStudioApp.createCommunityConnector();
 
 function optionsForState(state) {
   switch (state) {
@@ -83,6 +84,7 @@ function getConfig(request) {
   }
   return config.build();
 }
+// [end get_config_dynamic_dropdowns]
 
 function getFields() {
   var fields = cc.getFields();
