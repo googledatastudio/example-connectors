@@ -1,0 +1,15 @@
+{
+  "dependencies": {
+    "libraries": []
+  },
+  "dataStudio": {
+    "name": "Stepped Configuration Example",
+    "logoUrl": "https://www.gstatic.com/images/icons/material/system_gm/1x/settings_black_24dp.png",
+    "company": "Data Studio Developer Relations",
+    "companyUrl": "https://developers.google.com/datastudio/",
+    "addonUrl": "https://github.com/googledatastudio/example-connectors/tree/master/stepped-config",
+    "supportUrl": "https://github.com/googledatastudio/example-connectors/issues",
+    "description": "A community connector that shows how stepped configuration can be used to dynamically populate a dropdown.",
+    "sources": [""]
+  }
+}
