@@ -14,5 +14,8 @@
     "templates": {
       "default": "1twu0sHjqR5dELAPyGJcw4GS3-D0_NTrQ"
     }
-  }
+  },
+  "oauthScopes": [
+    "https://www.googleapis.com/auth/script.external_request"
+  ]
 }
