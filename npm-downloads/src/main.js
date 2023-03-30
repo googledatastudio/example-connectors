@@ -98,6 +98,10 @@ function getData(request) {
     var apiResponse = fetchDataFromApi(request);
     var normalizedResponse = normalizeResponse(request, apiResponse);
     var data = getFormattedData(normalizedResponse, requestedFields);
+    return {
+      schema: requestedFields.build(),
+      rows: data
+    };
   } catch (e) {
     cc.newUserError()
       .setDebugText('Error fetching data from API. Exception details: ' + e)
@@ -106,11 +110,6 @@ function getData(request) {
       )
       .throwException();
   }
-
-  return {
-    schema: requestedFields.build(),
-    rows: data
-  };
 }
 
 /**
